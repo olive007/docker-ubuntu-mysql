@@ -23,8 +23,10 @@ RUN usermod -d /var/lib/mysql mysql
 COPY etc/php/7.0/apache2/conf.d/80-custom.ini /etc/php/7.0/apache2/conf.d/80-custom.ini
 
 # Start mysql service to install phpmyadmin (phpmyadmin set a database during its installation)
-RUN service mysql start && \
+RUN service mysql restart && \
+    echo "Salut tous le monde" && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends phpmyadmin && \
+    echo "Hello word" && \
     service mysql stop
 
 # Config phpmyadmin config file

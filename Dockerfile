@@ -4,6 +4,8 @@ MAINTAINER SECRET Olivier (olivier@devolive.be)
 ARG MYSQL_PASS=test
 
 # Install mysql-server, php7.0 and apache2
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends apt-utils
+
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends \
     				   	   	   mysql-server-5.7 \
 						   apache2 \
@@ -14,7 +16,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommend
 						   libapache2-mod-php7.0
 
 # Fix MySQL home error
-RUN sudo usermod -d /var/lib/mysql/ mysql
+RUN usermod -d /var/lib/mysql mysql
 
 # Customize some php configuration
 # Increase the limit size of the uploaded file

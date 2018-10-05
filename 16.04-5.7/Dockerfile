@@ -34,17 +34,18 @@ COPY etc/php/$PHP_VERSION/apache2/conf.d/80-custom.ini /etc/php/$PHP_VERSION/apa
 # Fix the MySQL home error
 RUN usermod -d /var/lib/mysql mysql && chown mysql:mysql -R /var/lib/mysql
 
+
 # Start mysql service to install phpmyadmin (phpmyadmin set a database during its installation)
-# and stop the mysql service just after
+# and stop the mysql service just after because Container is NOT able to save running services
 RUN mkdir /var/run/mysqld && \
-    chown mysql:mysql -R /var/run/mysqld && \
-    ls -al /var/run/; \
-    ls -al /var/run/mysqld; \
+    chown mysql:root /var/run/mysqld && \
     service mysql start && \
+    sleep 1 && \
     DEBIAN_FRONTEND=noninteractive apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get upgrade -y -qq && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends phpmyadmin && \
     service mysql stop
+
 
 # Move the database into a other directory
 RUN mv /var/lib/mysql /var/lib/mysql.tmp
@@ -52,7 +53,7 @@ RUN mv /var/lib/mysql /var/lib/mysql.tmp
 # Create a volume to don't directly save databases into the container
 VOLUME /var/lib/mysql
 
-# Copy the phpmyadmin config file
+# Copy the phpmyadmin config for apacke file
 ADD etc/apache2/sites-enabled/000-default.conf /etc/apache2/sites-enabled/000-default.conf
 
 
